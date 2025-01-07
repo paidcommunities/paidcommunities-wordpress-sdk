@@ -24,8 +24,8 @@ abstract class AbstractModelFactory implements ModelFactoryInterface {
 				if ( method_exists( $model, $methodName ) ) {
 					$value = $model->$methodName( $value );
 				}
-				$model->{$key} = $value;
 			}
+			$model->{$key} = $value;
 		}
 
 		return $model;
