@@ -2,7 +2,7 @@
 
 namespace PaidCommunities\WordPress;
 
-use PaidCommunities\Exception\ApiErrorException;
+use PaidCommunities\WordPress\Exception\ApiErrorException;
 use PaidCommunities\WordPress\HttpClient\WordPressClient;
 
 /**
