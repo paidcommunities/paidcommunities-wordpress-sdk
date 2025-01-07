@@ -45,11 +45,11 @@ class UpdateController {
 					if ( $response ) {
 						$update = [
 							'new_version'  => $response->new_version,
-							'version'      => $pluginData['Version'],
+							'version'      => $response->version,
 							'package'      => $response->package,
 							'slug'         => $response->slug,
-							'icons'        => (array) $response->icons,
-							'banners'      => (array) $response->banners,
+							'icons'        => $response->icons,
+							'banners'      => $response->banners,
 							'tested'       => $response->tested,
 							'requires'     => $response->requires,
 							'requires_php' => $response->requires_php
@@ -80,18 +80,6 @@ class UpdateController {
 						$response = $client->plugins->getInfo( [
 							'product_id' => $args->slug
 						] );
-						if ( ! empty( $response->sections ) ) {
-							$response->sections = (array) $response->sections;
-						}
-						if ( ! empty( $response->banners ) ) {
-							$response->banners = (array) $response->banners;
-						}
-						if ( ! empty( $response->contributors ) ) {
-							$response->contributors = (array) $response->contributors;
-							foreach ( $response->contributors as $username => $contributor_data ) {
-								$response->contributors[ $username ] = (array) $contributor_data;
-							}
-						}
 					} catch ( ApiErrorException $e ) {
 						$response = new \WP_Error( 'plugin_info', $e->getMessage() );
 					}
