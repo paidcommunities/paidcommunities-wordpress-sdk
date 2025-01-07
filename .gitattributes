@@ -1,0 +1,14 @@
+/bin export-ignore
+/tests export-ignore
+composer.* export-ignore
+build.sh export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+phpunit.xml export-ignore
+.gitignore export-ignore
+.distignore export-ignore
+.gitattributes export-ignore
+webpack.config.json export-ignore
+webpack.config.js export-ignore
+/src/WordPress/assets
+/src/WordPress/bin

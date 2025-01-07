@@ -1,0 +1,18 @@
+{
+  "name": "paidcommunities/wordpress-sdk",
+  "description": "WordPress SDK for the PaidCommunities API",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "PaidCommunities\\WordPress\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "PaidCommunities"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
+}

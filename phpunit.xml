@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        bootstrap="tests/bootstrap.php"
+        backupGlobals="false"
+        colors="true"
+        convertErrorsToExceptions="false"
+        convertNoticesToExceptions="false"
+        convertWarningsToExceptions="false"
+        verbose="true"
+>
+    <testsuites>
+        <testsuite name="PaidCommunities PHP SDK Tests">
+            <directory suffix=".php">./tests/php</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="WORDPRESS_DIR" value="/Applications/MAMP/htdocs/paymentplugins"/>
+        <env name="LICENSE_KEY" value="1cc4092e-2d8e-4915-a64f-3271b06ddfca"/>
+        <env name="DOMAIN" value="example.com"/>
+        <env name="DOMAIN_ID" value="dom_d8NYfyTZ0a5oKZY6otao2cDC"/>
+    </php>
+</phpunit>

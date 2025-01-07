@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": ". build.sh",
+    "create:release": "node bin/create-release.js"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "octokit": "^2.0.14"
+  }
+}
