@@ -3,6 +3,7 @@
 namespace PaidCommunities\WordPress\Admin;
 
 use PaidCommunities\WordPress\PluginConfig;
+use PaidCommunities\WordPress\Util\GeneralUtils;
 
 class LicenseSettings {
 

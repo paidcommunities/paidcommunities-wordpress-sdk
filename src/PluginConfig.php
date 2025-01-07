@@ -2,7 +2,7 @@
 
 namespace PaidCommunities\WordPress;
 
-use PaidCommunities\HttpClient\AbstractClient;
+use PaidCommunities\WordPress\HttpClient\AbstractClient;
 use PaidCommunities\WordPress\Admin\AdminAjaxController;
 use PaidCommunities\WordPress\Admin\AdminScripts;
 use PaidCommunities\WordPress\Admin\LicenseSettings;
