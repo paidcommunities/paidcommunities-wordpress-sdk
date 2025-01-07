@@ -2,6 +2,7 @@
 
 namespace PaidCommunities\WordPress\Service;
 
+use PaidCommunities\WordPress\Model\PluginInfoResponse;
 use PaidCommunities\WordPress\Model\PluginUpdateResponse;
 
 class PluginService extends AuthenticatedService {
@@ -20,10 +21,10 @@ class PluginService extends AuthenticatedService {
 	/**
 	 * @param $request
 	 *
-	 * @return mixed
+	 * @return PluginInfoResponse
 	 * @throws \PaidCommunities\Exception\ApiErrorException
 	 */
 	public function getInfo( $request ) {
-		return $this->get( $this->buildPath( '/info' ), $request, \stdClass::class );
+		return $this->get( $this->buildPath( '/info' ), $request, PluginInfoResponse::class );
 	}
 }
