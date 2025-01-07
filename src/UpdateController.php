@@ -80,6 +80,7 @@ class UpdateController {
 						$response = $client->plugins->getInfo( [
 							'product_id' => $args->slug
 						] );
+						$response = $response->toObject();
 					} catch ( ApiErrorException $e ) {
 						$response = new \WP_Error( 'plugin_info', $e->getMessage() );
 					}

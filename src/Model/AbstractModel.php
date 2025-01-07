@@ -17,4 +17,25 @@ class AbstractModel implements ModelInterface {
 	public function __isset( $name ) {
 		return \array_key_exists( $name, $this->data );
 	}
+
+	public function toObject() {
+		$object = new \stdClass();
+		foreach ( $this->data as $key => $value ) {
+			$object->{$key} = $this->transformValue( $value );
+		}
+
+		return $object;
+	}
+
+	private function transformValue( $value ) {
+		if ( $value instanceof AbstractModel ) {
+			return $value->toObject();
+		}
+
+		if ( is_array( $value ) ) {
+			return array_map( [ $this, 'transformValue' ], $value );
+		}
+
+		return $value;
+	}
 }
