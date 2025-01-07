@@ -35,17 +35,17 @@ class AdminAjaxController {
 
 	public function handleLicenseActivate() {
 		// use the license key to activate the domain
-		$license   = $this->config->getLicense();
-		$client    = new WordPressClient( $this->config->getEnvironment() );
-		$licenseKy = $_POST['license_key'] ?? '';
-		$domain    = $_SERVER['SERVER_NAME'] ?? '';
+		$license    = $this->config->getLicense();
+		$client     = new WordPressClient( $this->config->getEnvironment() );
+		$licenseKey = $_POST['license_key'] ?? '';
+		$domain     = $_SERVER['SERVER_NAME'] ?? '';
 		try {
 			$this->verifyAdminNonce();
 
 			if ( ! current_user_can( 'administrator' ) ) {
 				throw new \Exception( __( 'Administrator access is required to perform this action.', 'paidcommunities' ), 403 );
 			}
-			if ( ! $licenseKy ) {
+			if ( ! $licenseKey ) {
 				throw new \Exception( __( 'Please provide a license key', 'paidcommunities' ) );
 			}
 			if ( ! $domain ) {
@@ -55,14 +55,14 @@ class AdminAjaxController {
 			$metadata = apply_filters( 'domain_metadata_' . $this->config->getPluginBasename(), [] );
 
 			$domain = $client->domains->register( [
-				'key'        => $licenseKy,
+				'key'        => $licenseKey,
 				'domain'     => $domain,
 				'version'    => $this->config->getVersion(),
 				'product_id' => $this->config->getProductId(),
 				'metadata'   => $metadata
 			] );
 
-			$license->setLicenseKey( GeneralUtils::redactString( $licenseKy, 8 ) );
+			$license->setLicenseKey( GeneralUtils::redactString( $licenseKey, 8 ) );
 			$license->setStatus( License::ACTIVE );
 			$license->setSecret( $domain->secret );
 			$license->setDomain( $domain->domain );

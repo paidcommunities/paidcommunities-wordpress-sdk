@@ -19,7 +19,13 @@ abstract class AbstractModelFactory implements ModelFactoryInterface {
 					}
 				}
 			}
-			$model->{$key} = $value;
+			if ( $model instanceof AbstractModel ) {
+				$methodName = 'transform' . str_replace( '_', '', ucwords( $key, '_' ) );
+				if ( method_exists( $model, $methodName ) ) {
+					$value = $model->$methodName( $value );
+				}
+				$model->{$key} = $value;
+			}
 		}
 
 		return $model;

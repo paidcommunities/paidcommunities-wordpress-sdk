@@ -6,6 +6,7 @@ namespace PaidCommunities\WordPress\Model;
  * @property string $slug
  * @property bool $update
  * @property string $version
+ * @property string $new_version
  * @property string $package
  * @property string $last_check
  * @property array $icons
@@ -154,5 +155,29 @@ class PluginUpdateResponse extends AbstractModel {
 	 */
 	public function setBanners( array $banners ) {
 		$this->banners = $banners;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNewVersion() {
+		return $this->new_version;
+	}
+
+	/**
+	 * @param string $new_version
+	 */
+	public function setNewVersion( $new_version ) {
+		$this->new_version = $new_version;
+
+		return $this;
+	}
+
+	public function transformBanners( $value ) {
+		return (array) $value;
+	}
+
+	public function transformIcons( $value ) {
+		return (array) $value;
 	}
 }
