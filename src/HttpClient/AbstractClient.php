@@ -37,6 +37,14 @@ abstract class AbstractClient implements ClientInterface {
 		$this->secret      = $secret;
 	}
 
+	/**
+	 * @param $method
+	 * @param $path
+	 * @param $request
+	 * @param $opts
+	 *
+	 * @return mixed
+	 */
 	abstract function request( $method, $path, $request, $opts );
 
 	public function get( $path, $opts = [] ) {

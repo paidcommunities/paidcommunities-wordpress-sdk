@@ -13,6 +13,8 @@ class PluginService extends AuthenticatedService {
 	 * @param $request
 	 *
 	 * @return PluginUpdateResponse
+	 * @throws \PaidCommunities\WordPress\Exception\ApiErrorException
+	 *
 	 */
 	public function updateCheck( $request ) {
 		return $this->post( $this->buildPath( '/update_check' ), $request, PluginUpdateResponse::class );
@@ -22,7 +24,7 @@ class PluginService extends AuthenticatedService {
 	 * @param $request
 	 *
 	 * @return PluginInfoResponse
-	 * @throws \PaidCommunities\Exception\ApiErrorException
+	 * @throws \PaidCommunities\WordPress\Exception\ApiErrorException
 	 */
 	public function getInfo( $request ) {
 		return $this->get( $this->buildPath( '/info' ), $request, PluginInfoResponse::class );
