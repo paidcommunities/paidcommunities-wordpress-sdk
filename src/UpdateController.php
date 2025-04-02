@@ -36,25 +36,25 @@ class UpdateController {
 				$license = $this->config->getLicense();
 				$secret  = $license->getSecret();
 
-				if ( $secret ) {
-					$client   = new WordPressClient( $this->config->getEnvironment(), $secret );
-					$response = $client->plugins->updateCheck( [
-						'version'    => $pluginData['Version'],
-						'product_id' => $this->config->getProductId()
-					] );
-					if ( $response ) {
-						$update = [
-							'new_version'  => $response->new_version,
-							'version'      => $response->version,
-							'package'      => $response->package,
-							'slug'         => $response->slug,
-							'icons'        => $response->icons,
-							'banners'      => $response->banners,
-							'tested'       => $response->tested,
-							'requires'     => $response->requires,
-							'requires_php' => $response->requires_php
-						];
-						$license->setLastCheck( $response->last_check );
+				$client   = new WordPressClient( $this->config->getEnvironment(), $secret );
+				$response = $client->plugins->updateCheck( [
+					'version'    => $pluginData['Version'],
+					'product_id' => $this->config->getProductId()
+				] );
+				if ( $response ) {
+					$update = [
+						'new_version'  => $response->new_version,
+						'version'      => $response->version,
+						'package'      => $response->package,
+						'slug'         => $response->slug,
+						'icons'        => $response->icons,
+						'banners'      => $response->banners,
+						'tested'       => $response->tested,
+						'requires'     => $response->requires,
+						'requires_php' => $response->requires_php
+					];
+					$license->setLastCheck( $response->last_check );
+					if ( $secret && isset( $response->license ) ) {
 						$license->setStatus( $response->license->status );
 						$license->save();
 					}
@@ -74,16 +74,14 @@ class UpdateController {
 				$license = $this->config->getLicense();
 				$secret  = $license->getSecret();
 
-				if ( $secret ) {
-					$client = new WordPressClient( $this->config->getEnvironment(), $secret );
-					try {
-						$response = $client->plugins->getInfo( [
-							'product_id' => $args->slug
-						] );
-						$response = $response->toObject();
-					} catch ( ApiErrorException $e ) {
-						$response = new \WP_Error( 'plugin_info', $e->getMessage() );
-					}
+				$client = new WordPressClient( $this->config->getEnvironment(), $secret );
+				try {
+					$response = $client->plugins->getInfo( [
+						'product_id' => $args->slug
+					] );
+					$response = $response->toObject();
+				} catch ( ApiErrorException $e ) {
+					$response = new \WP_Error( 'plugin_info', $e->getMessage() );
 				}
 			}
 		}
