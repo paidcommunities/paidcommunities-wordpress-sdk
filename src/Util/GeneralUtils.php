@@ -39,7 +39,7 @@ class GeneralUtils {
 	 * @param $pluginFile
 	 *
 	 * @return mixed|string
-	 * @since 1.0.1
+	 * @since 0.0.2
 	 */
 	public static function parsePluginVersion( $pluginFile ) {
 		$data['Version'] = '';

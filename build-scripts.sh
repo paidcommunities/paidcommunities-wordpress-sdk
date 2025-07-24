@@ -4,9 +4,11 @@ rm -rf "${BASE_PATH}/build"
 
 mkdir -p "${BASE_PATH}/build"
 
-# clone repository to this directory. We use github2.com so the paidcommunities ssh key is used
+rm -rf paidcommunities-wp
+
+# clone repository to this directory.
 echo 'cloning paidcommunities-wp repository...'
-git clone git@github2.com:paidcommunities/paidcommunities-wp.git
+git clone git@github.com:paidcommunities/paidcommunities-wp.git
 
 cd paidcommunities-wp
 

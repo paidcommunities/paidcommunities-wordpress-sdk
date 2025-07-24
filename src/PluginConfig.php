@@ -41,13 +41,13 @@ class PluginConfig {
 	private $optionName;
 
 	/**
-	 * @var @since 1.0.1
+	 * @var @since 0.0.2
 	 */
 	private $productId;
 
 	/**
-	 * @param string $slug The name of the plugin
-	 * @param string $version The current version of the plugin
+	 * @param string $plugin_file The filepath for the plugin's main file.
+	 * @param string $product_id The internal ID for the PaidCommunities product. Example: prd_80jidOmdFitybAHD
 	 * @param array $overrides array of optional overrides to customize the default behavior.
 	 */
 	public function __construct( $plugin_file, $product_id, $overrides = [] ) {
