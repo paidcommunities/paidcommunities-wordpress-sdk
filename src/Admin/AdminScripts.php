@@ -4,6 +4,7 @@ namespace PaidCommunities\WordPress\Admin;
 
 use PaidCommunities\WordPress\Assets\AssetDataApi;
 use PaidCommunities\WordPress\Assets\AssetsApi;
+use PaidCommunities\WordPress\Hooks;
 use PaidCommunities\WordPress\PluginConfig;
 
 class AdminScripts {
@@ -13,15 +14,15 @@ class AdminScripts {
 	private $assets;
 
 	public function __construct( PluginConfig $config, AssetsApi $assets ) {
-		$this->config     = $config;
-		$this->assets     = $assets;
+		$this->config = $config;
+		$this->assets = $assets;
 	}
 
 	public function initialize() {
 		if ( did_action( 'admin_init' ) ) {
 			$this->register_scripts();
 		} else {
-			add_action( 'admin_init', [ $this, 'register_scripts' ] );
+			Hooks::addGlobalAction( 'admin_init', [ $this, 'register_scripts' ] );
 		}
 	}
 

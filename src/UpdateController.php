@@ -3,6 +3,7 @@
 namespace PaidCommunities\WordPress;
 
 use PaidCommunities\WordPress\Exception\ApiErrorException;
+use PaidCommunities\WordPress\HttpClient\AbstractClient;
 use PaidCommunities\WordPress\HttpClient\WordPressClient;
 
 /**
@@ -19,6 +20,7 @@ class UpdateController {
 	public function initialize() {
 		add_filter( 'update_plugins_paidcommunities.com', [ $this, 'checkPluginUpdates' ], 10, 3 );
 		add_filter( 'plugins_api', [ $this, 'fetchPluginInfo' ], 10, 3 );
+		Hooks::addGlobalAction( 'http_response', [ $this, 'parseHttpResponse' ], 10, 3 );
 	}
 
 	/**
@@ -82,6 +84,40 @@ class UpdateController {
 					$response = $response->toObject();
 				} catch ( ApiErrorException $e ) {
 					$response = new \WP_Error( 'plugin_info', $e->getMessage() );
+				}
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * @param array $response
+	 * @param array $parsed_args
+	 * @param string $url
+	 *
+	 * @return void
+	 * @since
+	 * 0.0.4
+	 */
+	public function parseHttpResponse( $response, $parsed_args, $url ) {
+		if ( strpos( $url, AbstractClient::PRODUCTION_URL ) !== false || strpos( $url, AbstractClient::SANDBOX_URL ) !== false ) {
+			if ( strpos( $url, '/wordpress/v1/downloads' ) !== false ) {
+				$response_code = wp_remote_retrieve_response_code( $response );
+
+				if ( 200 !== $response_code ) {
+					if ( \is_array( $parsed_args ) && isset( $parsed_args['filename'] ) ) {
+						$tmpf = fopen( $parsed_args['filename'], 'rb' );
+						if ( $tmpf ) {
+							$body = fread( $tmpf, filesize( $parsed_args['filename'] ) );
+							$body = json_decode( $body, true );
+							fclose( $tmpf );
+
+							if ( \is_array( $body ) && isset( $body['message'], $response['response'] ) ) {
+								$response['response']['message'] = $body['message'];
+							}
+						}
+					}
 				}
 			}
 		}

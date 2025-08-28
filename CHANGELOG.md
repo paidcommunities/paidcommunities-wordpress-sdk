@@ -1,6 +1,11 @@
 # Changelog
 
+## 0.0.4 - 2025-08-28
+
+* Updated - Added the PaidCommunities\WordPress\Hooks class which ensures global actions and filters are only triggered once.
+
 ## 0.0.3 - 2025-07-24
+
 * Updated documented methods and bumped internal version of @paidcommunities-wp/components to 1.0.3
 
 ## 0.0.2 - 2025-04-02
