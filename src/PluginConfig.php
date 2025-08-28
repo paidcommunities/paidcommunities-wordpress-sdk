@@ -78,7 +78,7 @@ class PluginConfig {
 		$assets_api           = new AssetsApi( $this->baseDir, plugin_dir_url( __DIR__ ), $this->version );
 		$this->settings       = new LicenseSettings( $this );
 		$this->ajaxController = new AdminAjaxController( $this );
-		$this->updates        = new UpdateController( $this );
+		$this->updates        = new UpdateController( $this, new Cache() );
 		$this->adminScripts   = new AdminScripts( $this, $assets_api );
 
 		$this->updates->initialize();

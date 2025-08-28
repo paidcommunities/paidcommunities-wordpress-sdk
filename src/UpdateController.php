@@ -11,10 +11,19 @@ use PaidCommunities\WordPress\HttpClient\WordPressClient;
  */
 class UpdateController {
 
+	/**
+	 * @var PluginConfig
+	 */
 	private $config;
 
-	public function __construct( PluginConfig $config ) {
+	/**
+	 * @var Cache
+	 */
+	private $cache;
+
+	public function __construct( PluginConfig $config, Cache $cache ) {
 		$this->config = $config;
+		$this->cache  = $cache;
 	}
 
 	public function initialize() {
@@ -35,6 +44,14 @@ class UpdateController {
 	public function checkPluginUpdates( $update, $pluginData, $pluginFile ) {
 		if ( $pluginFile === $this->config->getPluginBasename() ) {
 			try {
+				$cache_key = $this->cache->generateKey( 'update_plugins', $this->config->getProductId(), $pluginData['Version'] );
+				// check if this request is in cache first.
+				$cached_response = $this->cache->get( $cache_key );
+
+				if ( $cached_response ) {
+					return $cached_response;
+				}
+
 				$license = $this->config->getLicense();
 				$secret  = $license->getSecret();
 
@@ -60,6 +77,9 @@ class UpdateController {
 						$license->setStatus( $response->license->status );
 						$license->save();
 					}
+
+					// Cache the $update array you just built
+					$this->cache->set( $cache_key, $update );
 				}
 			} catch ( ApiErrorException $e ) {
 				// add logging
@@ -92,13 +112,13 @@ class UpdateController {
 	}
 
 	/**
-	 * @param array  $response
-	 * @param array  $parsed_args
+	 * @param array $response
+	 * @param array $parsed_args
 	 * @param string $url
 	 *
+	 * @return void
 	 * @since
 	 * 0.0.4
-	 * @return void
 	 */
 	public function parseHttpResponse( $response, $parsed_args, $url ) {
 		// Early return if not our API URL
