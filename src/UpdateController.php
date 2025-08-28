@@ -92,37 +92,108 @@ class UpdateController {
 	}
 
 	/**
-	 * @param array $response
-	 * @param array $parsed_args
+	 * @param array  $response
+	 * @param array  $parsed_args
 	 * @param string $url
 	 *
-	 * @return void
 	 * @since
 	 * 0.0.4
+	 * @return void
 	 */
 	public function parseHttpResponse( $response, $parsed_args, $url ) {
-		if ( strpos( $url, AbstractClient::PRODUCTION_URL ) !== false || strpos( $url, AbstractClient::SANDBOX_URL ) !== false ) {
-			if ( strpos( $url, '/wordpress/v1/downloads' ) !== false ) {
-				$response_code = wp_remote_retrieve_response_code( $response );
+		// Early return if not our API URL
+		if ( ! $this->isApiUrl( $url ) ) {
+			return $response;
+		}
 
-				if ( 200 !== $response_code ) {
-					if ( \is_array( $parsed_args ) && isset( $parsed_args['filename'] ) ) {
-						$tmpf = fopen( $parsed_args['filename'], 'rb' );
-						if ( $tmpf ) {
-							$body = fread( $tmpf, filesize( $parsed_args['filename'] ) );
-							$body = json_decode( $body, true );
-							fclose( $tmpf );
+		// Only process download endpoints with non-200 responses
+		if ( ! $this->isEndpoint( $url, '/downloads' ) || $this->isSuccessfulResponse( $response ) ) {
+			return $response;
+		}
 
-							if ( \is_array( $body ) && isset( $body['message'], $response['response'] ) ) {
-								$response['response']['message'] = $body['message'];
-							}
-						}
-					}
-				}
-			}
+		// Extract error message from temp file if available
+		$error_message = $this->extractErrorMessageFromFile( $parsed_args );
+
+		if ( $error_message !== null && isset( $response['response'] ) ) {
+			$response['response']['message'] = $error_message;
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Check if URL belongs to our API
+	 *
+	 * @param string $url
+	 *
+	 * @return bool
+	 */
+	private function isApiUrl( $url ) {
+		return strpos( $url, AbstractClient::PRODUCTION_URL ) !== false
+		       || strpos( $url, AbstractClient::SANDBOX_URL ) !== false;
+	}
+
+	/**
+	 * Check if URL matches a specific endpoint
+	 *
+	 * @param string $url
+	 * @param string $endpoint
+	 *
+	 * @return bool
+	 */
+	private function isEndpoint( $url, $endpoint ) {
+		return strpos( $url, $endpoint ) !== false;
+	}
+
+	/**
+	 * Check if response was successful
+	 *
+	 * @param array $response
+	 *
+	 * @return bool
+	 */
+	private function isSuccessfulResponse( $response ) {
+		return wp_remote_retrieve_response_code( $response ) === 200;
+	}
+
+	/**
+	 * Extract error message from temporary file
+	 *
+	 * @param array $parsed_args
+	 *
+	 * @return string|null
+	 */
+	private function extractErrorMessageFromFile( $parsed_args ) {
+		if ( ! is_array( $parsed_args ) || ! isset( $parsed_args['filename'] ) ) {
+			return null;
+		}
+
+		$filename = $parsed_args['filename'];
+
+		// Validate file exists and is readable
+		if ( ! file_exists( $filename ) || ! is_readable( $filename ) ) {
+			return null;
+		}
+
+		// Use file_get_contents instead of manual file operations
+		$file_contents = file_get_contents( $filename );
+		if ( $file_contents === false ) {
+			return null;
+		}
+
+		$decoded_body = json_decode( $file_contents, true );
+
+		// Validate JSON decode and structure
+		if ( json_last_error() !== JSON_ERROR_NONE
+		     ||
+		     ! is_array( $decoded_body )
+		     ||
+		     ! isset( $decoded_body['message'] )
+		) {
+			return null;
+		}
+
+		return $decoded_body['message'];
 	}
 
 }

@@ -19,11 +19,7 @@ class AdminScripts {
 	}
 
 	public function initialize() {
-		if ( did_action( 'admin_init' ) ) {
-			$this->register_scripts();
-		} else {
-			Hooks::addGlobalAction( 'admin_init', [ $this, 'register_scripts' ] );
-		}
+		Hooks::addGlobalAction( 'admin_init', [ $this, 'register_scripts' ] );
 	}
 
 	public function register_scripts() {
