@@ -3,6 +3,7 @@
 ## 0.0.4 - 2025-08-28
 
 * Updated - Added the PaidCommunities\WordPress\Hooks class which ensures global actions and filters are only triggered once.
+* Updated - Added the PaidCommunities\WordPress\Cache class which is used to store the response from plugin update checks.
 
 ## 0.0.3 - 2025-07-24
 
