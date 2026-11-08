@@ -96,6 +96,9 @@ class AdminAjaxController {
 	public function handleLicenseDeactivate() {
 		$license = $this->config->getLicense();
 		$client  = new WordPressClient( $this->config->getEnvironment() );
+
+		// Authorization checks are performed outside the try/catch below so a failed nonce or
+		// capability check can never trigger deletion of the locally stored license.
 		try {
 			$this->verifyAdminNonce();
 
@@ -108,6 +111,13 @@ class AdminAjaxController {
 			if ( ! $id ) {
 				throw new \Exception( __( 'Domain ID cannot be empty. Are you sure you have a registered domain?', 'paidcommunities' ) );
 			}
+		} catch ( \Exception $e ) {
+			$this->sendAjaxErrorResponse( $e );
+
+			return;
+		}
+
+		try {
 			$client->setSecret( $license->getSecret() );
 
 			$client->domains->delete( $id );

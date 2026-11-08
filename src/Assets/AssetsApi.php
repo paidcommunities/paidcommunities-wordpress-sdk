@@ -23,7 +23,7 @@ class AssetsApi {
 		$relative_path = '/' . ltrim( $relative_path, '\/' );
 		$file_name     = str_replace( '.js', '.asset.php', $relative_path );
 		$file          = $this->basePath . $file_name;
-		$version       = null;
+		$version       = is_null( $version ) ? $this->version : $version;
 		if ( file_exists( $file ) ) {
 			$assets  = include $file;
 			$version = $assets['version'] ?? $version;

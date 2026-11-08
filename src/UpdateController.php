@@ -44,16 +44,17 @@ class UpdateController {
 	public function checkPluginUpdates( $update, $pluginData, $pluginFile ) {
 		if ( $pluginFile === $this->config->getPluginBasename() ) {
 			try {
-				$cache_key = $this->cache->generateKey( 'update_plugins', $this->config->getProductId(), $pluginData['Version'] );
+				$license = $this->config->getLicense();
+				$secret  = $license->getSecret();
+
+				// Include the secret so activating/deactivating a license bypasses a previously cached response.
+				$cache_key = $this->cache->generateKey( 'update_plugins', $this->config->getProductId(), $pluginData['Version'], (string) $secret );
 				// check if this request is in cache first.
 				$cached_response = $this->cache->get( $cache_key );
 
 				if ( $cached_response ) {
 					return $cached_response;
 				}
-
-				$license = $this->config->getLicense();
-				$secret  = $license->getSecret();
 
 				$client   = new WordPressClient( $this->config->getEnvironment(), $secret );
 				$response = $client->plugins->updateCheck( [

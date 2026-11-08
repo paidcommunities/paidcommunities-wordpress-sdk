@@ -51,6 +51,7 @@ class License {
 		$this->domain     = $data['domain'] ?? '';
 		$this->domainId   = $data['domainId'] ?? '';
 		$this->createdAt  = $data['createdAt'] ?? '';
+		$this->lastCheck  = $data['lastCheck'] ?? '';
 	}
 
 	private function getOptionName() {

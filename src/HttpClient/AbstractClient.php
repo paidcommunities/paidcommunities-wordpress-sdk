@@ -2,6 +2,7 @@
 
 namespace PaidCommunities\WordPress\HttpClient;
 
+use PaidCommunities\WordPress\Exception\ApiErrorException;
 use PaidCommunities\WordPress\Exception\AuthenticationException;
 use PaidCommunities\WordPress\Exception\AuthorizationException;
 use PaidCommunities\WordPress\Exception\BadRequestException;
@@ -48,7 +49,7 @@ abstract class AbstractClient implements ClientInterface {
 	abstract function request( $method, $path, $request, $opts );
 
 	public function get( $path, $opts = [] ) {
-		return $this->request( 'get', $path, $opts );
+		return $this->request( 'get', $path, [], $opts );
 	}
 
 	public function post( $path, $args = [], $opts = [] ) {
@@ -73,8 +74,11 @@ abstract class AbstractClient implements ClientInterface {
 				throw AuthorizationException::factory( $code, $body );
 			case 404:
 				throw NotFoundException::factory( $code, $body );
-			case 405:
-				break;
+		}
+
+		// Any other non-2xx response (405, 429, 5xx, etc.) is treated as an error.
+		if ( $code < 200 || $code >= 300 ) {
+			throw ApiErrorException::factory( $code, $body );
 		}
 	}
 
