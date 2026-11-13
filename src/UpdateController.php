@@ -76,6 +76,10 @@ class UpdateController {
 					$license->setLastCheck( $response->last_check );
 					if ( $secret && isset( $response->license ) ) {
 						$license->setStatus( $response->license->status );
+						// keeps the products current, such as after the customer changes tiers.
+						if ( isset( $response->license->product_ids ) ) {
+							$license->setProductIds( $response->license->product_ids );
+						}
 						$license->save();
 					}
 

@@ -20,6 +20,14 @@ class License {
 
 	private $lastCheck;
 
+	/**
+	 * The products on the license. If the plugin's product is a parent product, these are the child products the
+	 * customer purchased, such as a Pro tier, which the plugin can use to enable features.
+	 *
+	 * @var string[]
+	 */
+	private $productIds = [];
+
 	const INACTIVE = 'inactive';
 
 	const ACTIVE = 'active';
@@ -41,6 +49,7 @@ class License {
 		$this->setDomainId( '' );
 		$this->setCreatedAt( '' );
 		$this->setLastCheck( '' );
+		$this->setProductIds( [] );
 	}
 
 	public function read() {
@@ -52,6 +61,7 @@ class License {
 		$this->domainId   = $data['domainId'] ?? '';
 		$this->createdAt  = $data['createdAt'] ?? '';
 		$this->lastCheck  = $data['lastCheck'] ?? '';
+		$this->productIds = $data['productIds'] ?? [];
 	}
 
 	private function getOptionName() {
@@ -114,6 +124,31 @@ class License {
 		$this->lastCheck = $value;
 	}
 
+	/**
+	 * @return string[]
+	 */
+	public function getProductIds() {
+		return $this->productIds;
+	}
+
+	/**
+	 * @param string[] $ids
+	 */
+	public function setProductIds( $ids ) {
+		$this->productIds = is_array( $ids ) ? array_values( $ids ) : [];
+	}
+
+	/**
+	 * Check if a product is on the license, such as the child product for a tier.
+	 *
+	 * @param string $id
+	 *
+	 * @return bool
+	 */
+	public function hasProductId( $id ) {
+		return in_array( $id, $this->productIds, true );
+	}
+
 	public function toArray() {
 		return [
 			'licenseKey' => $this->licenseKey,
@@ -122,7 +157,8 @@ class License {
 			'domain'     => $this->domain,
 			'domainId'   => $this->domainId,
 			'createdAt'  => $this->createdAt,
-			'lastCheck'  => $this->lastCheck
+			'lastCheck'  => $this->lastCheck,
+			'productIds' => $this->productIds
 		];
 	}
 

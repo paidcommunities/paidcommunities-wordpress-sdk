@@ -68,6 +68,9 @@ class AdminAjaxController {
 			$license->setDomain( $domain->domain );
 			$license->setDomainId( $domain->id );
 			$license->setCreatedAt( $domain->created_at );
+			if ( isset( $domain->product_ids ) ) {
+				$license->setProductIds( $domain->product_ids );
+			}
 			$license->save();
 
 			ob_start();
